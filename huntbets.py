@@ -83,6 +83,8 @@ def gameinput():
                 print("and %s on team %s." % (bet[i],i+1))
         wagerlist[name] = bet
 
+        bookkeep()
+
     print("\n"+str(wagerlist))
 
 #math section
@@ -104,7 +106,7 @@ def bookkeep():
             pot+=teamsum
             ctr+=1
             teamsum=0
-
+    global payout
     payout=[]
     for i in sumlist:
         payout+=[round((pot-i)/i,2)]
@@ -113,6 +115,7 @@ def bookkeep():
     for i in range(len(payout)):
         print("Team %s : %s" % (i+1,payout[i]))
 
+def winner():
     while True:  
         gwinner = input("\nWho won the game? Enter the number of the winning team (eg '1'): ")
 
@@ -146,7 +149,7 @@ while True:
         playerinput()
     gameinput()
     bookkeep()
-
+    winner()
     while True:
         
         newgame=input("Enter 'game' to start a new game, or 'exit' to quit: ")
