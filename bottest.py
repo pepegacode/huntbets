@@ -1,6 +1,7 @@
 import logging
 import key
 import betengine
+import chip
 from telegram import Update, InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler,filters, MessageHandler,ApplicationBuilder, ContextTypes, CommandHandler
 
@@ -53,9 +54,11 @@ async def addwager(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if lockedin == 0:    
         wager = context.args
         name = update.message.from_user.first_name
+        print(context._user_id)
         print("NAME HERE: "+str(name))
         print("WAGER HERE: "+str(wager))
-        currentpay = betengine.bookkeep(name,wager)
+        player_id=context._user_id
+        currentpay = betengine.bookkeep(name,wager,player_id)
         if type(currentpay) == list:
             await context.bot.send_message(chat_id=update.effective_chat.id, text="Payout: %s\nPot: %s" % (currentpay[0],currentpay[1]))
             if update.effective_chat.id != -702820687:
