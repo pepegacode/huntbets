@@ -1,3 +1,5 @@
+import chip
+
 wagerlist={}
 playernumber=0
 teamnumber=3
@@ -10,7 +12,7 @@ def setteam(x):
     teamnumber=x
 
 #adds a wager to the wagerlist and returns the payout table. Takes a name and a list, returns a list with current payout and pot.
-def bookkeep(name,wager):
+def bookkeep(name,wager,player_id):
     global playernumber
     global pot
 
@@ -24,10 +26,16 @@ def bookkeep(name,wager):
     
     if len(wager)==teamnumber:
         wagerlist[name]=wager
+        wagerlist['id']=player_id
     else:
         print("Invalid length, wager not accepted. Currently there are %s teams." % teamnumber)
         return "Invalid length, wager not accepted. Currently there are %s teams." % teamnumber
     
+    trx = chip.procWager(wager,player_id)
+    if trx == 'overdraft':
+        return trx
+    
+
     #print(wagerlist)
     
     playernumber+=1
@@ -87,6 +95,7 @@ def endgame(gwinner):
             elif wl > 0:
                 print("(+%s)"%round(wl,2))
             wagerlist[i]=[winnings,wl]
+            chip.procWinnings(winnings,wagerlist[i]['id'])
 
         return wagerlist
 
