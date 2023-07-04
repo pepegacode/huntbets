@@ -29,6 +29,7 @@ def set_balance(form={},player_id=None):
 
 def add_player(form={}):
     lod = get_players()
+    print(lod)
     file = open('chips.csv','w',encoding="utf-8",newline='')
     write=csv.writer(file, delimiter=',')
     for d in range(len(lod)):
@@ -39,6 +40,7 @@ def add_player(form={}):
 
 def procWager(wager,id):
     lod=get_players()
+    print(lod)
     name=lod[id]['name']
     expend=sum(wager)
     oldbal=lod[id]['balance']
@@ -51,6 +53,7 @@ def procWager(wager,id):
 
 def procWinnings(winnings,id):
     lod=get_players()
+    print(lod)
     name=lod[id]['name']
     oldbal=lod[id]['balance']
     newbal=oldbal+winnings
