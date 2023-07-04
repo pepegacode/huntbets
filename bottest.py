@@ -4,6 +4,7 @@ import betengine
 from telegram import Update, InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler,filters, MessageHandler,ApplicationBuilder, ContextTypes, CommandHandler
 
+lockedin=0
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -49,15 +50,18 @@ async def setteams(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
 async def addwager(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    wager = context.args
-    name = context._user_id
-    print("NAME HERE: "+str(name))
-    print("WAGER HERE: "+str(wager))
-    currentpay = betengine.bookkeep(name,wager)
-    if type(currentpay) == list:
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="Payout: %s\nPot: %s" % (currentpay[0],currentpay[1]))
+    if lockedin == 0:    
+        wager = context.args
+        name = update.message.from_user.first_name
+        print("NAME HERE: "+str(name))
+        print("WAGER HERE: "+str(wager))
+        currentpay = betengine.bookkeep(name,wager)
+        if type(currentpay) == list:
+            await context.bot.send_message(chat_id=update.effective_chat.id, text="Payout: %s\nPot: %s" % (currentpay[0],currentpay[1]))
+        else:
+            await context.bot.send_message(chat_id=update.effective_chat.id, text="%s" % currentpay)
     else:
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="%s" % currentpay)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Wagers are locked in!")
 
 async def showpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     currentpay = betengine.showpot()
@@ -81,12 +85,22 @@ async def endgame(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context._user_id in key.adminlist:
         betengine.reset()
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="Game has been reset.")
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Game has been reset, enter your wagers when ready.")
+        global lockedin
+        lockedin=0
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="/addwager sets your wager for the current game\n/showpot shows the current pot and payouts per dollar for each team\nADMIN COMMANDS\n/setteams sets the number of teams in play\n/endgame ends the game, requires the number of the winning team\n/reset resets the pot back to 0")
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Huntbets uses parimutuel betting, more commonly known as the style of betting used for horse racing. To place a wager, enter a bet for each team, in order, separated by spaces. For example, to bet 5 on Team 1, 0 on Team 2, and 2 on Team 3, enter '/addwager 5 0 2'\n\nCOMMANDS\n/addwager sets your wager for the current game\n/showpot shows the current pot and payouts per dollar for each team\nADMIN COMMANDS\n/setteams sets the number of teams in play\n/endgame ends the game, requires the number of the winning team\n/reset resets the pot back to 0\n/lockin Prevents new wagers from being added, or existing ones from being altered. Typically done after 2 minutes. Make sure to submit or retract your wagers before they are locked in!")
+
+async def lockin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context._user_id in key.adminlist:
+        global lockedin
+        lockedin = 1
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Wagers are locked in!")
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
 async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
@@ -104,6 +118,7 @@ if __name__ == '__main__':
     end_game_handler = CommandHandler('endgame', endgame)
     reset_handler = CommandHandler('reset', reset)
     show_pot_handler = CommandHandler('showpot', showpot)
+    lock_handler = CommandHandler('lockin', lockin)
     unknown_handler = MessageHandler(filters.COMMAND, unknown)
 
     application.add_handler(start_handler)
@@ -116,6 +131,7 @@ if __name__ == '__main__':
     application.add_handler(end_game_handler)
     application.add_handler(reset_handler)
     application.add_handler(show_pot_handler)
+    application.add_handler(lock_handler)
     application.add_handler(unknown_handler)
 
     application.run_polling()
