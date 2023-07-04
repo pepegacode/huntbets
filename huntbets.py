@@ -1,8 +1,5 @@
 import math
 
-global np
-global ng
-
 ng=0
 np=0
 wagerlist = {}
