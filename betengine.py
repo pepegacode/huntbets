@@ -26,11 +26,15 @@ def bookkeep(name,wager,player_id):
     
     if len(wager)==teamnumber:
         wagerlist[name]=wager
-        wagerlist['id']=player_id
+        #wagerlist['id']=player_id
     else:
         print("Invalid length, wager not accepted. Currently there are %s teams." % teamnumber)
         return "Invalid length, wager not accepted. Currently there are %s teams." % teamnumber
     
+    submitted=0
+    for i in wagerlist:
+        if i ==
+
     trx = chip.procWager(wager,player_id)
     if trx == 'overdraft':
         return trx
