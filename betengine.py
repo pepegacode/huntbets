@@ -3,6 +3,7 @@ import chip
 wagerlist={}
 playernumber=0
 teamnumber=3
+sumlist2=[]
 pot=0
 payout=[]
 
@@ -15,6 +16,7 @@ def setteam(x):
 def bookkeep(name,wager,player_id):
     global playernumber
     global pot
+    global sumlist2
 
     lod = chip.get_players()
     regi=0
@@ -77,6 +79,7 @@ def bookkeep(name,wager,player_id):
             ctr+=1
             teamsum=0
     pot=sum(sumlist)
+    sumlist2=sumlist
     global payout
     payout=[]
     for i in sumlist:
@@ -117,16 +120,30 @@ def endgame(gwinner):
         return wagerlist
 
 def retract(player_id):
+    global sumlist2
+    global pot
     removewager=0
     for i in wagerlist:
         if wagerlist[i][1] == player_id:
             removewager=i
     chip.procWinnings(sum(wagerlist[removewager][0]),player_id)
+
+    for i in range(len(sumlist2)):
+        sumlist2[i]=sumlist2[i]-wagerlist[removewager][0][i]
+    pot=pot-sum(wagerlist[removewager][0])
     wagerlist.pop(removewager)
 
     pass
 
 def showpot():
+    global payout
+    print("ACTION HERE: %s, %s, %s"%(sumlist2,payout,pot))
+    for i in range(len(sumlist2)):
+        try:
+            payout[i]=round((pot-sumlist2[i])/sumlist2[i],2)
+        except:
+            payout[i]=0
+    
     return [payout,pot]
 
 def reset():

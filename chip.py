@@ -27,13 +27,19 @@ def set_balance(form={}):
         write.writerow(lod[d].values())
     file.close()
 
+def get_balance(form):
+    lod = get_players()
+    for i in lod:
+        if int(i['id']) == int(form['id']):
+            return i['balance']
+
 def add_player(form={}):
     lod = get_players()
     print(lod)
     file = open('chips.csv','w',encoding="utf-8",newline='')
     write=csv.writer(file, delimiter=',')
     for d in range(len(lod)):
-        write.writerow(lod[d])
+        write.writerow(lod[d].values())
     write.writerow(form.values())
     file.close()
     pass
