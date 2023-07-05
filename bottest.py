@@ -79,10 +79,10 @@ async def endgame(update: Update, context: ContextTypes.DEFAULT_TYPE):
         finalmessage=""
         for i in results:
             print("DICTIONARY HERE: "+str(results[i]))
-            if results[i][1] > 0:
-                finalmessage=finalmessage+"%s wins %s  (+%s)\n" % (i,results[i][0],results[i][1])
+            if results[i][0][1] > 0:
+                finalmessage=finalmessage+"%s wins %s  (+%s)\n" % (i,results[i][0][0],results[i][0][1])
             else:
-                finalmessage=finalmessage+"%s wins %s  (%s)\n" % (i,results[i][0],results[i][1])
+                finalmessage=finalmessage+"%s wins %s  (%s)\n" % (i,results[i][0][0],results[i][0][1])
         await context.bot.send_message(chat_id=update.effective_chat.id, text=finalmessage)
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
