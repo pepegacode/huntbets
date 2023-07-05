@@ -16,6 +16,17 @@ def bookkeep(name,wager,player_id):
     global playernumber
     global pot
 
+    lod = chip.get_players()
+    regi=0
+    form={'name':name,'balance':0,'id':player_id}
+    for i in lod:
+        if int(i['id']) == int(id):
+            regi=1
+    if regi==0:
+        chip.add_player(form)
+
+    print("WAGERLIST HERE: %s"%wagerlist)
+
     for i in range(len(wager)):
         try:
             wager[i]=float(wager[i])
@@ -23,22 +34,24 @@ def bookkeep(name,wager,player_id):
             print("Invalid character, wager not accepted.")
             return "Invalid character, wager not accepted."
     
+    submitted=0
+    for i in wagerlist:
+        if wagerlist[i][1] == player_id:
+            submitted=1
+            return "Wager already submitted"
+
     
-    if len(wager)==teamnumber:
-        wagerlist[name]=wager
-        #wagerlist['id']=player_id
-    else:
+    
+    #WAGER ENTERED INTO WAGERLIST HERE
+    if len(wager)!=teamnumber:
         print("Invalid length, wager not accepted. Currently there are %s teams." % teamnumber)
         return "Invalid length, wager not accepted. Currently there are %s teams." % teamnumber
     
-    submitted=0
-    for i in wagerlist:
-        if i ==
-
     trx = chip.procWager(wager,player_id)
     if trx == 'overdraft':
         return trx
-    
+
+    wagerlist[name]=[wager,player_id]
 
     #print(wagerlist)
     
@@ -48,14 +61,14 @@ def bookkeep(name,wager,player_id):
     sumlist=[]
     for k in wagerlist:
         
-        for j in wagerlist[k]:
+        for j in wagerlist[k][0]:
             
             if ctr == int(teamnumber):
                 break
             for i in wagerlist:
                 if ctr == int(teamnumber):
                     break
-                teamsum+=wagerlist[i][ctr]
+                teamsum+=wagerlist[i][0][ctr]
                 #print("ts: "+str(teamsum))
             
             sumlist+=[teamsum]
@@ -91,17 +104,27 @@ def endgame(gwinner):
     if type(gwinner) == type(1):
     
         for i in wagerlist:
-            winnings=round(wagerlist[i][gwinner]+wagerlist[i][gwinner]*payout[gwinner],2)
+            winnings=round(wagerlist[i][0][gwinner]+wagerlist[i][0][gwinner]*payout[gwinner],2)
             print("\n"+str(i)+" wins "+str(winnings))
-            wl=round(winnings-sum(wagerlist[i]),2)
+            wl=round(winnings-sum(wagerlist[i][0]),2)
             if wl < 0:
                 print("(%s)"%round(wl,2))
             elif wl > 0:
                 print("(+%s)"%round(wl,2))
-            wagerlist[i]=[winnings,wl]
-            chip.procWinnings(winnings,wagerlist[i]['id'])
+            wagerlist[i][0]=[winnings,wl]
+            chip.procWinnings(winnings,wagerlist[i][1])
 
         return wagerlist
+
+def retract(player_id):
+    removewager=0
+    for i in wagerlist:
+        if wagerlist[i][1] == player_id:
+            removewager=i
+    chip.procWinnings(sum(wagerlist[removewager][0]),player_id)
+    wagerlist.pop(removewager)
+
+    pass
 
 def showpot():
     return [payout,pot]

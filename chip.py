@@ -5,26 +5,26 @@ def get_players():
     contents = csv.reader(file, delimiter=',')
     
     dictlist=[]
-    ctr=0
+    
     for i in contents:
         x = {}
         x["name"] = i[0]
         x["balance"] = float(i[1])
-        x["id"] = ctr
-        ctr+=1
+        x["id"] = i[2]
+        
         dictlist.append(x)
     file.close()
     return dictlist
 
-def set_balance(form={},player_id=None):
+def set_balance(form={}):
     lod = get_players()
+    for i in lod:
+        if int(i['id']) == int(form['id']):
+            i['balance'] = form['balance']
     file = open('chips.csv','w',encoding="utf-8",newline='')
     write=csv.writer(file, delimiter=',')
     for d in range(len(lod)):
-        if d == int(player_id):
-            write.writerow(form.values())
-        else:
-            write.writerow(lod[d].values())
+        write.writerow(lod[d].values())
     file.close()
 
 def add_player(form={}):
@@ -41,22 +41,40 @@ def add_player(form={}):
 def procWager(wager,id):
     lod=get_players()
     print(lod)
-    name=lod[id]['name']
+    name=""
+    for i in lod:
+        if int(i['id']) == int(id):
+            name = i['name']
+
     expend=sum(wager)
-    oldbal=lod[id]['balance']
+    oldbal=0
+
+    for i in lod:
+        if int(i['id']) == int(id):
+            oldbal = i['balance']
+
     newbal=oldbal-expend
     if newbal < 0:
         return "overdraft"
-    form={'name':name,'balance':newbal}
-    set_balance(form,id)
+    print("FORM HERE: %s, %s, %s"%(name,newbal,id))
+    form={'name':name,'balance':newbal, 'id':id}
+    set_balance(form)
     return "Wager accepted"
 
 def procWinnings(winnings,id):
     lod=get_players()
     print(lod)
-    name=lod[id]['name']
-    oldbal=lod[id]['balance']
+    name=""
+    for i in lod:
+        if int(i['id']) == int(id):
+            name = i['name']
+
+    oldbal=0
+    for i in lod:
+        if int(i['id']) == int(id):
+            oldbal = i['balance']
+
     newbal=oldbal+winnings
-    form={'name':name,'balance':newbal}
-    set_balance(form,id)
+    form={'name':name,'balance':newbal,'id':id}
+    set_balance(form)
 
