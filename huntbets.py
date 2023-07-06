@@ -1,3 +1,4 @@
+#command line program that does parimutuel betting math, not required for the telegram bot
 import math
 
 ng=0
