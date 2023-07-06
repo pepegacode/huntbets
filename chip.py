@@ -1,3 +1,5 @@
+#This file deals with managing player balances stored on the chips.csv file
+
 import csv
 
 def get_players():
