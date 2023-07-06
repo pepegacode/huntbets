@@ -1,3 +1,4 @@
+#This file deals with the math for parimutuel betting
 import chip
 
 wagerlist={}
