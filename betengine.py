@@ -20,7 +20,7 @@ def bookkeep(name,wager,player_id):
 
     lod = chip.get_players()
     regi=0
-    form={'name':name,'balance':0,'id':player_id}
+    form={'name':name,'balance':5,'id':player_id}
     for i in lod:
         if int(i['id']) == int(player_id):
             regi=1
