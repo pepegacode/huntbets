@@ -82,10 +82,12 @@ def bookkeep(name,wager,player_id):
     pot=sum(sumlist)
     sumlist2=sumlist
     global payout
-    payout=[]
-    for i in sumlist:
-        payout+=[round((pot-i)/i,2)]
-    print("payout: "+str(payout))
+    payout=[0,0,0]
+    for i in range(len(sumlist2)):
+        try:
+            payout[i]=round((pot-sumlist2[i])/sumlist2[i],2)
+        except:
+            payout[i]=0
     print("pot: "+str(pot))
     return [payout,pot]
 
@@ -117,8 +119,9 @@ def endgame(gwinner):
                 print("(+%s)"%round(wl,2))
             wagerlist[i][0]=[winnings,wl]
             chip.procWinnings(winnings,wagerlist[i][1])
-
-        return wagerlist
+        winninglist = wagerlist
+        reset()
+        return winninglist
 
 def retract(player_id):
     global sumlist2
