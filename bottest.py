@@ -153,10 +153,10 @@ async def addteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
             os.remove(key.imagepath+"/%s"%f)
         teamnumber += 1
         betengine.setteam(teamnumber)
-        await context.bot.send_message(chat_id=-702820687, text="Team size updated to %s" % teamnumber)
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="New team!\n\n%s\n%s"%(size, members))
+        
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="<b>Team %s</b>\n\n%s\n%s"%(teamnumber,size, members),parse_mode="HTML")
         if update.effective_chat.id != -702820687:
-                await context.bot.send_message(chat_id=-702820687, text="New team!\n\n%s\n%s"%(size, members))
+                await context.bot.send_message(chat_id=-702820687, text="<b>Team %s</b>\n\n%s\n%s"%(teamnumber,size, members),parse_mode="HTML")
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
