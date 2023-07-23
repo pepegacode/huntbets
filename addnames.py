@@ -7,6 +7,7 @@ import key
 import os
 import keyboard
 import sys
+import subprocess
 
 #takes a screenshot of the part of the screen with the username and saves it in the Images folder
 def addImage():
@@ -16,27 +17,29 @@ def addImage():
         print("team full")
         return "team full"
     titles = pygetwindow.getAllTitles()
-
-    window = pygetwindow.getWindowsWithTitle('Hunt: Showdown')[0]
+    try:
+        window = pygetwindow.getWindowsWithTitle('Hunt: Showdown')[0]
+    except:
+        print("Hunt is not open")
 
     left, top = window.topleft
     right, bottom = window.bottomright
     pyautogui.screenshot(path)
     im = Image.open(path) #this might need adjusting
-    im = im.crop((left+1700,top+920,right-20,bottom-50))
+    im = im.crop((left+1500,top+920,right-20,bottom-50))
     im.save(path)
     #im.show(path)
     print(left,right,top,bottom)
     pass
 
-"""
+
 while True:
-    if keyboard.is_pressed("right ctrl"):
-            addImage()
-            print("Image added")
-            time.sleep(.25)
-"""
-while True:
-    keyboard.wait("right ctrl")
-    addImage()
-    print("Image added")
+    press=keyboard.read_key()
+    print(press)
+    if press=="right ctrl":
+        addImage()
+        time.sleep(.2)
+    elif press=="right shift":
+        print("BANG")
+        subprocess.call("assistantbot.py",shell=True)
+        time.sleep(.4)

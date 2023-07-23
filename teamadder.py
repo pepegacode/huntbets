@@ -2,13 +2,9 @@
 from PIL import Image
 import pytesseract
 import numpy
-import pygetwindow
-import pyautogui
 import key
 import os
-import glob
-import keyboard
-import sys
+
 
 
 
