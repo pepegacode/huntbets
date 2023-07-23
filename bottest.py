@@ -10,7 +10,8 @@ import os
 import keyboard
 import sys
 
-lockedin=0
+lockedin = 0
+teamnumber = 0
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -82,6 +83,7 @@ async def showpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def endgame(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context._user_id in key.adminlist:
+        global teamnumber
         results=betengine.endgame(context.args[0])
         finalmessage=""
         for i in results:
@@ -90,6 +92,7 @@ async def endgame(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 finalmessage=finalmessage+"%s wins %s  (+%s)\n" % (i,results[i][0][0],results[i][0][1])
             else:
                 finalmessage=finalmessage+"%s wins %s  (%s)\n" % (i,results[i][0][0],results[i][0][1])
+        teamnumber = 0
         await context.bot.send_message(chat_id=update.effective_chat.id, text=finalmessage)
         
     else:
@@ -100,7 +103,9 @@ async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
         betengine.reset()
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Game has been reset, enter your wagers when ready.")
         global lockedin
+        global teamnumber
         lockedin=0
+        teamnumber=0
         if update.effective_chat.id != -702820687:
                 await context.bot.send_message(chat_id=-702820687, text="Game has been reset, enter your wagers when ready.")
     else:
@@ -130,6 +135,7 @@ async def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Your balance is %s" % bal)
 
 async def addteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global teamnumber
     if context._user_id in key.adminlist:
         newteam = teamadder.readImages()
         size=""
@@ -145,6 +151,9 @@ async def addteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
         files = os.listdir(key.imagepath)
         for f in files:
             os.remove(key.imagepath+"/%s"%f)
+        teamnumber += 1
+        betengine.setteam(teamnumber)
+        await context.bot.send_message(chat_id=-702820687, text="Team size updated to %s" % teamnumber)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="New team!\n\n%s\n%s"%(size, members))
         if update.effective_chat.id != -702820687:
                 await context.bot.send_message(chat_id=-702820687, text="New team!\n\n%s\n%s"%(size, members))
