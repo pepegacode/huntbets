@@ -29,10 +29,14 @@ def addImage():
     print(left,right,top,bottom)
     pass
 
-
+"""
 while True:
     if keyboard.is_pressed("right ctrl"):
             addImage()
             print("Image added")
             time.sleep(.25)
-        
+"""
+while True:
+    keyboard.wait("right ctrl")
+    addImage()
+    print("Image added")
