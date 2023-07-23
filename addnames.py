@@ -7,7 +7,7 @@ import key
 import os
 import keyboard
 import sys
-import subprocess
+import assistantbot as bot
 
 #takes a screenshot of the part of the screen with the username and saves it in the Images folder
 def addImage():
@@ -35,11 +35,11 @@ def addImage():
 
 while True:
     press=keyboard.read_key()
-    print(press)
+    if press == "right ctrl" or press == "right shift":
+        print(press)
     if press=="right ctrl":
         addImage()
         time.sleep(.2)
     elif press=="right shift":
-        print("BANG")
-        subprocess.call("assistantbot.py",shell=True)
-        time.sleep(.4)
+        bot.msg("/addteam")
+        time.sleep(.2)
