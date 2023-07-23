@@ -167,6 +167,30 @@ async def clearteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
+async def binds(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context._user_id in key.adminlist:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Keybinds:\nRight Ctrl: Add player to team\nRight Shift: Publish team to roster\nDelete: Lock in wagers\nPage Down: Check what players are in the Images folder\nHome: Clear teams from the Images folder")
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
+
+async def check(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context._user_id in key.adminlist:
+        newteam = teamadder.readImages()
+        size=""
+        if len(newteam) == 1:
+            size="SOLO"
+        elif len(newteam) == 2:
+            size="DUO"
+        elif len(newteam) == 3:
+            size="TRIO"
+        members = ""
+        for i in range(len(newteam)):
+            members = members+"\n"+newteam[i]
+        
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="<b>Team %s</b>\n\n%s\n%s"%(teamnumber,size, members),parse_mode="HTML")
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
+
 async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
 
@@ -188,6 +212,8 @@ if __name__ == '__main__':
     balance_handler = CommandHandler('balance', balance)
     team_add_handler = CommandHandler('addteam', addteam)
     team_clear_handler = CommandHandler('clearteam', clearteam)
+    binds_handler = CommandHandler('binds', binds)
+    check_handler = CommandHandler('check', check)
     unknown_handler = MessageHandler(filters.COMMAND, unknown)
 
     application.add_handler(start_handler)
@@ -205,6 +231,8 @@ if __name__ == '__main__':
     application.add_handler(balance_handler)
     application.add_handler(team_add_handler)
     application.add_handler(team_clear_handler)
+    application.add_handler(binds_handler)
+    application.add_handler(check_handler)
     application.add_handler(unknown_handler)
 
     application.run_polling()

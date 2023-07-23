@@ -35,7 +35,8 @@ def addImage():
 
 while True:
     press=keyboard.read_key()
-    if press == "right ctrl" or press == "right shift":
+    klist=["right ctrl","right shift","delete","page down","home"]
+    if press in klist:
         print(press)
     if press=="right ctrl":
         addImage()
@@ -43,3 +44,17 @@ while True:
     elif press=="right shift":
         bot.msg("/addteam")
         time.sleep(.2)
+    elif press=="delete":
+        bot.msg("/lockin")
+        time.sleep(.2)
+    elif press=="page down":
+        bot.msg("/check")
+        time.sleep(.2)
+    elif press=="home":
+        press2=keyboard.read_key()
+        time.sleep(.2)
+        if press2=="home":
+            bot.msg("/clearteam")
+            time.sleep(.2)
+        else:
+            time.sleep(.2)
