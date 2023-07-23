@@ -147,6 +147,13 @@ async def addteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
+
+async def clearteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context._user_id in key.adminlist:
+        teamadder.clearImages()
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
+
 async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
 
@@ -167,6 +174,7 @@ if __name__ == '__main__':
     retract_handler = CommandHandler('retract', retract)
     balance_handler = CommandHandler('balance', balance)
     team_add_handler = CommandHandler('addteam', addteam)
+    team_clear_handler = CommandHandler('clearteam', clearteam)
     unknown_handler = MessageHandler(filters.COMMAND, unknown)
 
     application.add_handler(start_handler)
@@ -183,6 +191,7 @@ if __name__ == '__main__':
     application.add_handler(retract_handler)
     application.add_handler(balance_handler)
     application.add_handler(team_add_handler)
+    application.add_handler(team_clear_handler)
     application.add_handler(unknown_handler)
 
     application.run_polling()
