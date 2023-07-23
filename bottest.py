@@ -50,6 +50,8 @@ async def setteams(update: Update, context: ContextTypes.DEFAULT_TYPE):
             newteamsize=int(context.args[0])
             betengine.setteam(newteamsize)
             await context.bot.send_message(chat_id=update.effective_chat.id, text="Team size updated to %s" % newteamsize)
+            if update.effective_chat.id != -702820687:
+                await context.bot.send_message(chat_id=-702820687, text="Team size updated to %s" % newteamsize)
         except:
             await context.bot.send_message(chat_id=update.effective_chat.id, text="Bad input, failed to update team size")
     else:
@@ -152,6 +154,7 @@ async def addteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def clearteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context._user_id in key.adminlist:
         teamadder.clearImages()
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Team cleared.")
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
