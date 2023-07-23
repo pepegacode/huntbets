@@ -5,6 +5,10 @@ import betengine
 import chip
 from telegram import Update, InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler,filters, MessageHandler,ApplicationBuilder, ContextTypes, CommandHandler
+import teamadder
+import os
+import keyboard
+import sys
 
 lockedin=0
 
@@ -101,7 +105,7 @@ async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="Huntbets uses parimutuel betting, more commonly known as the style of betting used for horse racing. To place a wager, enter a bet for each team, in order, separated by spaces. For example, to bet 5 on Team 1, 0 on Team 2, and 2 on Team 3, enter '/addwager 5 0 2'. You send wagers in the groupchat, or send them directly to bet_bot to place them anonymously. The pot will update in the groupchat to display the new total to everyone participating. A team wins by extracting with the bounty of the boss target (wild targets do not count). In the event of a 'tie' or the bounty being split, the first teamt to extract with their bounty wins.\n\nCOMMANDS\n/addwager sets your wager for the current game.\n/retract takes back your submitted wager and refunds it to your balance, allowing you to make a new wager.\n/showpot shows the current pot and payouts per dollar for each team.\n/balance returns the balance of your account. If you would like to keep this to yourself, message betbot directly.\nADMIN COMMANDS\n/setteams sets the number of teams in play.\n/endgame ends the game, requires the number of the winning team.\n/reset resets the pot back to 0.\n/lockin Prevents new wagers from being added, or existing ones from being altered. Typically done after 2 minutes. Make sure to submit or retract your wagers before they are locked in!")
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Huntbets uses parimutuel betting, more commonly known as the style of betting used for horse racing. To place a wager, enter a bet for each team, in order, separated by spaces. For example, to bet 5 on Team 1, 0 on Team 2, and 2 on Team 3, enter '/addwager 5 0 2'. You send wagers in the groupchat, or send them directly to bet_bot to place them anonymously. The pot will update in the groupchat to display the new total to everyone participating. A team wins by extracting with the bounty of the boss target (wild targets do not count). In the event of a 'tie' or the bounty being split, the first team to extract with their bounty wins.\n\nCOMMANDS\n/addwager sets your wager for the current game.\n/retract takes back your submitted wager and refunds it to your balance, allowing you to make a new wager.\n/showpot shows the current pot and payouts per dollar for each team.\n/balance returns the balance of your account. If you would like to keep this to yourself, message betbot directly.\nADMIN COMMANDS\n/setteams sets the number of teams in play.\n/endgame ends the game, requires the number of the winning team.\n/reset resets the pot back to 0.\n/lockin Prevents new wagers from being added, or existing ones from being altered. Typically done after 2 minutes. Make sure to submit or retract your wagers before they are locked in!")
 
 async def lockin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context._user_id in key.adminlist:
@@ -123,6 +127,26 @@ async def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     bal=chip.get_balance(form)
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Your balance is %s" % bal)
 
+async def addteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context._user_id in key.adminlist:
+        newteam = teamadder.readImages()
+        size=""
+        if len(newteam) == 1:
+            size="SOLO"
+        elif len(newteam) == 2:
+            size="DUO"
+        elif len(newteam) == 3:
+            size="TRIO"
+        members = ""
+        for i in range(len(newteam)):
+            members = members+"\n"+newteam[i]
+        files = os.listdir(key.imagepath)
+        for f in files:
+            os.remove(key.imagepath+"/%s"%f)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="New team!\n\n%s\n%s"%(size, members))
+        
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
 
@@ -142,6 +166,7 @@ if __name__ == '__main__':
     lock_handler = CommandHandler('lockin', lockin)
     retract_handler = CommandHandler('retract', retract)
     balance_handler = CommandHandler('balance', balance)
+    team_add_handler = CommandHandler('addteam', addteam)
     unknown_handler = MessageHandler(filters.COMMAND, unknown)
 
     application.add_handler(start_handler)
@@ -157,6 +182,7 @@ if __name__ == '__main__':
     application.add_handler(lock_handler)
     application.add_handler(retract_handler)
     application.add_handler(balance_handler)
+    application.add_handler(team_add_handler)
     application.add_handler(unknown_handler)
 
     application.run_polling()
