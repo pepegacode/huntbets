@@ -145,13 +145,16 @@ async def addteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
             size="DUO"
         elif len(newteam) == 3:
             size="TRIO"
+        else:
+            size="EMPTY"
         members = ""
         for i in range(len(newteam)):
             members = members+"\n"+newteam[i]
         files = os.listdir(key.imagepath)
         for f in files:
             os.remove(key.imagepath+"/%s"%f)
-        teamnumber += 1
+        if size!="EMPTY":
+            teamnumber += 1
         betengine.setteam(teamnumber)
         
         await context.bot.send_message(chat_id=update.effective_chat.id, text="<b>Team %s</b>\n\n%s\n%s"%(teamnumber,size, members),parse_mode="HTML")
@@ -183,6 +186,8 @@ async def check(update: Update, context: ContextTypes.DEFAULT_TYPE):
             size="DUO"
         elif len(newteam) == 3:
             size="TRIO"
+        else:
+            size="EMPTY"
         members = ""
         for i in range(len(newteam)):
             members = members+"\n"+newteam[i]
