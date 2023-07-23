@@ -43,16 +43,18 @@ while True:
         time.sleep(.2)
     elif press=="right shift":
         bot.msg("/addteam")
+        print("player added")
         time.sleep(.2)
     elif press=="delete":
         bot.msg("/lockin")
+        print("wagers locked")
         time.sleep(.2)
     elif press=="page down":
         bot.msg("/check")
         time.sleep(.2)
     elif press=="home":
-        press2=keyboard.read_key()
         time.sleep(.2)
+        press2=keyboard.read_key()
         if press2=="home":
             print(press2)
             print("clearing team")
