@@ -94,7 +94,8 @@ async def endgame(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 finalmessage=finalmessage+"%s wins %s  (%s)\n" % (i,results[i][0][0],results[i][0][1])
         teamnumber = 0
         await context.bot.send_message(chat_id=update.effective_chat.id, text=finalmessage)
-        
+        if update.effective_chat.id != -702820687:
+                await context.bot.send_message(chat_id=-702820687, text=finalmessage)
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
