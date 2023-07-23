@@ -54,6 +54,8 @@ while True:
         press2=keyboard.read_key()
         time.sleep(.2)
         if press2=="home":
+            print(press2)
+            print("clearing team")
             bot.msg("/clearteam")
             time.sleep(.2)
         else:
