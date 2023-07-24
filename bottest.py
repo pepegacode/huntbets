@@ -51,8 +51,8 @@ async def setteams(update: Update, context: ContextTypes.DEFAULT_TYPE):
             newteamsize=int(context.args[0])
             betengine.setteam(newteamsize)
             await context.bot.send_message(chat_id=update.effective_chat.id, text="Team size updated to %s" % newteamsize)
-            if update.effective_chat.id != -702820687:
-                await context.bot.send_message(chat_id=-702820687, text="Team size updated to %s" % newteamsize)
+            if update.effective_chat.id != key.group_id:
+                await context.bot.send_message(chat_id=key.group_id, text="Team size updated to %s" % newteamsize)
         except:
             await context.bot.send_message(chat_id=update.effective_chat.id, text="Bad input, failed to update team size")
     else:
@@ -69,8 +69,8 @@ async def addwager(update: Update, context: ContextTypes.DEFAULT_TYPE):
         currentpay = betengine.bookkeep(name,wager,player_id)
         if type(currentpay) == list:
             await context.bot.send_message(chat_id=update.effective_chat.id, text="Payout: %s\nPot: %s" % (currentpay[0],currentpay[1]))
-            if update.effective_chat.id != -702820687:
-                await context.bot.send_message(chat_id=-702820687, text="Payout: %s\nPot: %s" % (currentpay[0],currentpay[1]))
+            if update.effective_chat.id != key.group_id:
+                await context.bot.send_message(chat_id=key.group_id, text="Payout: %s\nPot: %s" % (currentpay[0],currentpay[1]))
         else:
             await context.bot.send_message(chat_id=update.effective_chat.id, text="%s" % currentpay)
     else:
@@ -95,8 +95,8 @@ async def endgame(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 finalmessage=finalmessage+"%s wins %s  (%s)\n" % (i,results[i][0][0],results[i][0][1])
         teamnumber = 0
         await context.bot.send_message(chat_id=update.effective_chat.id, text=finalmessage)
-        if update.effective_chat.id != -702820687:
-                await context.bot.send_message(chat_id=-702820687, text=finalmessage)
+        if update.effective_chat.id != key.group_id:
+                await context.bot.send_message(chat_id=key.group_id, text=finalmessage)
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
@@ -108,8 +108,8 @@ async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
         global teamnumber
         lockedin=0
         teamnumber=0
-        if update.effective_chat.id != -702820687:
-                await context.bot.send_message(chat_id=-702820687, text="Game has been reset, enter your wagers when ready.")
+        if update.effective_chat.id != key.group_id:
+                await context.bot.send_message(chat_id=key.group_id, text="Game has been reset, enter your wagers when ready.")
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
@@ -121,8 +121,8 @@ async def lockin(update: Update, context: ContextTypes.DEFAULT_TYPE):
         global lockedin
         lockedin = 1
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Wagers are locked in!")
-        if update.effective_chat.id != -702820687:
-                await context.bot.send_message(chat_id=-702820687, text="Wagers are locked in!")
+        if update.effective_chat.id != key.group_id:
+                await context.bot.send_message(chat_id=key.group_id, text="Wagers are locked in!")
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
@@ -162,8 +162,8 @@ async def addteam(update: Update, context: ContextTypes.DEFAULT_TYPE):
         betengine.setteam(teamnumber)
         
         await context.bot.send_message(chat_id=update.effective_chat.id, text="<b>Team %s</b>\n\n%s\n%s"%(teamnumber,size, members),parse_mode="HTML")
-        if update.effective_chat.id != -702820687:
-                await context.bot.send_message(chat_id=-702820687, text="<b>Team %s</b>\n\n%s\n%s"%(teamnumber,size, members),parse_mode="HTML")
+        if update.effective_chat.id != key.group_id:
+                await context.bot.send_message(chat_id=key.group_id, text="<b>Team %s</b>\n\n%s\n%s"%(teamnumber,size, members),parse_mode="HTML")
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
