@@ -11,7 +11,31 @@ payout=[]
 #set the number of teams
 def setteam(x):
     global teamnumber
+    global wagerlist
+    global sumlist2
+    
+    try:
+        for i in wagerlist:
+            
+            if len(wagerlist[i][0]) != x:
+                dif = x - len(wagerlist[i][0])
+                for j in range(dif):
+                    wagerlist[i][0].append(0.0)
+                    print("WAGERLIST: %s"%wagerlist)
+    except Exception as e:
+        print("EXCEPTION: %s"%e)
+
+    try:
+        if len(sumlist2) != x:
+                dif = x - len(sumlist2)
+                for j in range(dif):
+                    sumlist2.append(0)
+                    print("SUMLIST: %s"%sumlist2)
+    except Exception as e:
+        print("EXCEPTION: %s"%e)
+
     teamnumber=x
+
 
 #adds a wager to the wagerlist and returns the payout table. Takes a name and a list, returns a list with current payout and pot.
 def bookkeep(name,wager,player_id):
@@ -19,6 +43,7 @@ def bookkeep(name,wager,player_id):
     global pot
     global sumlist2
 
+    """
     lod = chip.get_players()
     regi=0
     form={'name':name,'balance':5,'id':player_id}
@@ -27,6 +52,7 @@ def bookkeep(name,wager,player_id):
             regi=1
     if regi==0:
         chip.add_player(form)
+    """
 
     print("WAGERLIST HERE: %s"%wagerlist)
 
@@ -82,8 +108,9 @@ def bookkeep(name,wager,player_id):
     pot=sum(sumlist)
     sumlist2=sumlist
     global payout
-    payout=[0,0,0]
+    payout=[]
     for i in range(len(sumlist2)):
+        payout.append(0.0)
         try:
             payout[i]=round((pot-sumlist2[i])/sumlist2[i],2)
         except:
@@ -141,8 +168,10 @@ def retract(player_id):
 
 def showpot():
     global payout
+    payout=[]
     print("ACTION HERE: %s, %s, %s"%(sumlist2,payout,pot))
     for i in range(len(sumlist2)):
+        payout.append(0.0)
         try:
             payout[i]=round((pot-sumlist2[i])/sumlist2[i],2)
         except:
@@ -155,10 +184,15 @@ def reset():
     global playernumber
     global teamnumber
     global pot
-    wagerlist={}
+    global sumlist2
+    sumlist2 = []
+    wagerlist = {}
     playernumber=0
     teamnumber=3
     pot=0
+
+def getwagerlist():
+    return wagerlist
             
 
 
