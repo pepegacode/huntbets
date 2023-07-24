@@ -78,6 +78,7 @@ async def addwager(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def showpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     currentpay = betengine.showpot()
+    print("WAGERLIST CHECK: %s"%betengine.getwagerlist())
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Payout: %s\nPot: %s" % (currentpay[0],currentpay[1]))
     
 
@@ -199,6 +200,26 @@ async def check(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this command.")
 
+async def register(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    
+    name = update.message.from_user.first_name
+    print("ID HERE: %s"%context._user_id)
+    print("NAME HERE: "+str(name))
+    player_id=context._user_id
+    
+    lod = chip.get_players()
+    regi=0
+    form={'name':name,'balance':5,'id':player_id}
+    for i in lod:
+        if int(i['id']) == int(player_id):
+            regi=1
+    if regi==0:
+        chip.add_player(form)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Welcome to Huntbets!")
+
+    
+    
+
 async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
 
@@ -222,6 +243,7 @@ if __name__ == '__main__':
     team_clear_handler = CommandHandler('clearteam', clearteam)
     binds_handler = CommandHandler('binds', binds)
     check_handler = CommandHandler('check', check)
+    register_handler = CommandHandler('register', register)
     unknown_handler = MessageHandler(filters.COMMAND, unknown)
 
     application.add_handler(start_handler)
@@ -241,7 +263,9 @@ if __name__ == '__main__':
     application.add_handler(team_clear_handler)
     application.add_handler(binds_handler)
     application.add_handler(check_handler)
+    application.add_handler(register_handler)
     application.add_handler(unknown_handler)
 
     application.run_polling()
+    
     
