@@ -40,6 +40,11 @@ async def setteams(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def addwager(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if lockedin == 0:    
         wager = context.args
+
+        for i in wager:
+            if int(i) < 0:
+                await context.bot.send_message(chat_id=key.group_id, text="No negatives!")
+
         name = update.message.from_user.first_name
         print(context._user_id)
         print("NAME HERE: "+str(name))
@@ -64,6 +69,7 @@ async def showpot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def endgame(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context._user_id in key.adminlist:
         global teamnumber
+        global lockedin
         results=betengine.endgame(context.args[0])
         finalmessage=""
         for i in results:
@@ -73,6 +79,7 @@ async def endgame(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 finalmessage=finalmessage+"%s wins %s  (%s)\n" % (i,results[i][0][0],results[i][0][1])
         teamnumber = 0
+        lockedin=0
         await context.bot.send_message(chat_id=update.effective_chat.id, text=finalmessage)
         if update.effective_chat.id != key.group_id:
                 await context.bot.send_message(chat_id=key.group_id, text=finalmessage)
