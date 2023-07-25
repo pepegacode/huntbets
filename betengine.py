@@ -69,9 +69,16 @@ def bookkeep(name,wager,player_id):
             submitted=1
             return "Wager already submitted"
 
+    dictlist = chip.get_players()
+    registered=0
+    for i in dictlist:
+        if player_id == i["id"]:
+            registered=1
+    
+    if registered==0:
+        return "Use /register before you try to place wagers."
     
     
-    #WAGER ENTERED INTO WAGERLIST HERE
     if len(wager)!=teamnumber:
         print("Invalid length, wager not accepted. Currently there are %s teams." % teamnumber)
         return "Invalid length, wager not accepted. Currently there are %s teams." % teamnumber
@@ -80,6 +87,7 @@ def bookkeep(name,wager,player_id):
     if trx == 'overdraft':
         return trx
 
+    #WAGER ENTERED INTO WAGERLIST HERE
     wagerlist[name]=[wager,player_id]
 
     #print(wagerlist)
