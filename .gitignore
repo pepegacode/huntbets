@@ -3,3 +3,7 @@ key.py
 result1.png
 result2.png
 result3.png
+__pycache__/
+*.py[cod]
+*$py.class
+config.py

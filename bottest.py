@@ -3,12 +3,13 @@ import logging
 import key
 import betengine
 import chip
-from telegram import Update, InlineQueryResultArticle, InputTextMessageContent
+from telegram import Update, InlineQueryResultArticle, InputTextMessageContent, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, WebAppInfo
 from telegram.ext import InlineQueryHandler,filters, MessageHandler,ApplicationBuilder, ContextTypes, CommandHandler
 import teamadder
 import os
 import keyboard
 import sys
+import json
 
 lockedin = 0
 teamnumber = 0
@@ -18,11 +19,28 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="I'm a bot, please talk to me!"
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+
+    """Send a message with a button that opens a the web app."""
+
+    await update.message.reply_text(
+
+        "Please press the button below to choose a color via the WebApp.",
+
+        reply_markup=ReplyKeyboardMarkup.from_button(
+
+            KeyboardButton(
+
+                text="Open the color picker!",
+
+                web_app=WebAppInfo(url="https://127.0.0.1:5000"),
+
+            )
+
+        ),
+
     )
+
 
 async def setteams(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context._user_id in key.adminlist:
@@ -204,7 +222,25 @@ async def register(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Welcome to Huntbets!")
 
     
-    
+async def web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+
+    """Print the received data and remove the button."""
+
+    # Here we use `json.loads`, since the WebApp sends the data JSON serialized string
+
+    # (see webappbot.html)
+
+    data = json.loads(update.effective_message.web_app_data.data)
+    print(data)
+    await update.message.reply_html(
+
+        text=f"You selected the color with the HEX value <code>{data['hex']}</code>. The "
+
+        f"corresponding RGB value is <code>{tuple(data['rgb'].values())}</code>.",
+
+        reply_markup=ReplyKeyboardRemove(),
+
+    )
 
 async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
@@ -244,6 +280,7 @@ if __name__ == '__main__':
     application.add_handler(binds_handler)
     application.add_handler(check_handler)
     application.add_handler(register_handler)
+    application.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_data))
     application.add_handler(unknown_handler)
 
     application.run_polling()
