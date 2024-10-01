@@ -3,3 +3,5 @@ key.py
 result1.png
 result2.png
 result3.png
+__pycache__/
+session.session
